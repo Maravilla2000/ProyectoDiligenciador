@@ -50,8 +50,7 @@ col_f1, col_f2 = st.columns(2)
 with col_f1:
     fecha_acta_input = st.date_input("Fecha del Procedimiento", value=datetime.date.today())
 with col_f2:
-    hora_acta_input = st.time_input("Hora del Procedimiento", value=datetime.datetime.now().time())
-
+    hora_acta_input = st.time_input("Hora del Procedimiento", value=datetime.datetime.now().time(), step=60)
 col1, col2, col3 = st.columns(3)
 with col1:
     codigo_expediente = st.text_input("Código de Expediente / Ref.", "S/N")
