@@ -91,6 +91,19 @@ with col3:
     emisor_grado_nombre = f"{emisor_info['grado']}. {emisor_info['nombre']}"
     st.text_input("Grado y Nombre del Emisor", value=emisor_grado_nombre, disabled=True)
 
+    # 🔹 NUEVOS CAMPOS: Investigador y Código SATI
+col_inv1, col_inv2 = st.columns(2)
+with col_inv1:
+    nombre_investigador = st.text_input(
+        "Nombre del Investigador",
+        "Inv. Peliguey"
+    )
+with col_inv2:
+    codigo_sati = st.text_input(
+        "Código SATI",
+        "S/N"
+    )
+
 st.divider()
 
 imputados_lista, victimas_lista = [], []
@@ -297,6 +310,8 @@ if enviado:
             "fecha_oficio": f"{fecha_acta_input.day:02d} de {meses_lista[fecha_acta_input.month - 1].lower()} del {fecha_acta_input.year}",
             "fecha_hecho": f"{fecha_acta_input.day:02d}/{fecha_acta_input.month:02d}/{fecha_acta_input.year}",
             "hora_hecho": f"{hora_acta_input.hour:02d}:{hora_acta_input.minute:02d}",
+            "nombre_investigador": nombre_investigador,
+            "codigo_sati": codigo_sati,
             "lista_imputados": imputados_lista,
             "lista_victimas": victimas_lista
         }

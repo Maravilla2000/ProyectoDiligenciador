@@ -172,6 +172,9 @@ def construir_textos_delitos(imputados: list) -> dict:
 # PREPARACIÓN DE GRAMÁTICA Y EDADES/DUI
 # =========================================================
 def preparar_gramatica(datos_caso: dict) -> dict:
+        # 🔹 Valores por defecto para nuevos campos (por si no vienen)
+    datos_caso.setdefault("nombre_investigador", "")
+    datos_caso.setdefault("codigo_sati", "")
     imputados = limpiar_datos(datos_caso.get("lista_imputados", []))
     victimas = limpiar_datos(datos_caso.get("lista_victimas", []))
 
@@ -238,7 +241,7 @@ def preparar_gramatica(datos_caso: dict) -> dict:
         # REGLA IDENTIFICACIÓN IMPUTADO: Valor por defecto o Conversión de números
         identidad_val = imp.get("Identidad", "").strip()
         if not identidad_val:
-            identidad_acta = "sin documento, manifestó llamarse así"
+            identidad_acta = "el cual manifestó no tener y llamarse como menciono previamente"
         else:
             identidad_acta = convertir_identidad_a_letras(identidad_val, para_acta=True)
 
@@ -263,7 +266,7 @@ def preparar_gramatica(datos_caso: dict) -> dict:
         b_acta = (
             f"{trato} {imp['Nombre']}{alias_txt} de {edad_acta} años de edad"
             f"{est_civil_txt}{prof_txt}, de nacionalidad {imp['Nacionalidad']}, "
-            f"residente en {imp['Residencia']}, quien {identidad_acta}{pandilla_txt}, {padre_madre}"
+            f"residente en {imp['Residencia']}, con documento {identidad_acta}{pandilla_txt}, {padre_madre}"
         )
         bloques_acta.append(b_acta)
 
