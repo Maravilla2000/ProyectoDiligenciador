@@ -266,7 +266,7 @@ def preparar_gramatica(datos_caso: dict) -> dict:
         b_acta = (
             f"{trato} {imp['Nombre']}{alias_txt} de {edad_acta} años de edad"
             f"{est_civil_txt}{prof_txt}, de nacionalidad {imp['Nacionalidad']}, "
-            f"residente en {imp['Residencia']}, con documento {identidad_acta}{pandilla_txt}, {padre_madre}"
+            f"residente en {imp['Residencia']}, con documento unico de identidad {identidad_acta}{pandilla_txt}, {padre_madre}"
         )
         bloques_acta.append(b_acta)
 
