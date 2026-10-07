@@ -211,14 +211,15 @@ def preparar_gramatica(datos_caso: dict) -> dict:
             f"{ident} con documento único de identidad número {dui_acta}"
         )
 
-        # 🔹 Oficios: incluir DUI en NÚMERO
+        # 🔹 Oficios: incluir DUI en NÚMERO justo después de la edad
         dui_txt_oficio = (
             f", con documento único de identidad número {dui_oficio}"
             if dui_oficio else ""
         )
         t_oficio = (
-            f"{v['Nombre']} de {edad_oficio} años de edad, "
-            f"residente en {v['Residencia']}{dui_txt_oficio}"
+            f"{v['Nombre']} de {edad_oficio} años de edad"
+            f"{dui_txt_oficio}, "
+            f"residente en {v['Residencia']}"
         )
         v_nombres_oficio.append(f"{i+1}) {t_oficio}" if len(victimas) > 1 else t_oficio)
 
@@ -293,15 +294,15 @@ def preparar_gramatica(datos_caso: dict) -> dict:
         )
         bloques_acta.append(b_acta)
 
-        # 🔹 Oficios: incluir IDENTIDAD en NÚMERO
+        # 🔹 Oficios: incluir IDENTIDAD en NÚMERO justo después de la edad
         identidad_txt_oficio = (
             f", con documento de identidad número {imp['Identidad_Oficio']}"
             if imp.get('Identidad_Oficio') else ""
         )
         b_oficio = (
-            f"{imp['Nombre']} de {edad_oficio} años de edad, "
+            f"{imp['Nombre']} de {edad_oficio} años de edad"
+            f"{identidad_txt_oficio}, "
             f"de nacionalidad {imp['Nacionalidad']}, residente en {imp['Residencia']}"
-            f"{identidad_txt_oficio}"
         )
         bloques_oficios.append(f"{i+1}) {b_oficio}" if plural else b_oficio)
 
