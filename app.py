@@ -53,7 +53,7 @@ with col_f2:
     hora_acta_input = st.time_input("Hora del Procedimiento", value=datetime.datetime.now().time(), step=60)
 col1, col2, col3 = st.columns(3)
 with col1:
-    codigo_expediente = st.text_input("Código de Expediente / Ref.", "S/N")
+    codigo_expediente = st.text_input("Código de Expediente / Ref.", "001-2026")
     lugar_acta = st.text_input("Lugar del Acta", "EN EL PUESTO DE LA POLICIA NACIONAL CIVIL DE POLITUR SALINITAS...")
     lugar_resguardo = st.text_input("Lugar Custodia / Resguardo", "bartolinas del nueve once de Sonsonate")
     unidad_policial = st.text_input("Unidad Policial", "POLITUR SALINITAS")
@@ -152,7 +152,7 @@ if modo == "Procedimiento Individual (1 Imputado y 1 Víctima)":
         imp_genero = st.selectbox("Género", ["Masculino", "Femenino"], key="g_imp")
         imp_edad = st.text_input("Edad", "44")
         # El campo de identidad ahora inicia vacío para activar el fallback si el usuario no escribe nada.
-        imp_identidad = st.text_input("DUI (Dejar vacío para texto por defecto)", "")
+        imp_identidad = st.text_input("DUI (Dejar vacío para texto por defecto)", "06148510-8")
         imp_nacionalidad = st.text_input("Nacionalidad", "Salvadoreña")
     with col4_b:
         imp_alias = st.text_input("Alias", "")
