@@ -1,60 +1,59 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 import os
-import streamlit
 
-streamlit_path = os.path.dirname(streamlit.__file__)
+from PyInstaller.utils.hooks import collect_all, copy_metadata
 
-block_cipher = None
+project_dir = SPECPATH
+streamlit_datas, streamlit_binaries, streamlit_hiddenimports = collect_all("streamlit")
+tzdata_datas, tzdata_binaries, tzdata_hiddenimports = collect_all("tzdata")
+
+datas = streamlit_datas + tzdata_datas + [
+    (os.path.join(project_dir, "app.py"), "."),
+    (os.path.join(project_dir, "01_ACTA_DE_REMISION_PLANTILLA.docx"), "."),
+    (os.path.join(project_dir, "02_OFICIO_FGR_PLANTILLA.docx"), "."),
+    (os.path.join(project_dir, "03_OFICIO_PGR_PLANTILLA.docx"), "."),
+    (os.path.join(project_dir, "04_OFICIO_PDH_PLANTILLA.docx"), "."),
+    (os.path.join(project_dir, "05_OFICIO_CUSTODIA_911_PLANTILLA.docx"), "."),
+    (os.path.join(project_dir, "06_ACTA_DE_IDENTIFICACION_PLANTILLA.docx"), "."),
+]
+datas += copy_metadata("streamlit")
 
 a = Analysis(
-    ['run_app.py'],
-    pathex=['.'],
-    binaries=[],
-    datas=[
-        ('app.py', '.'),
-        ('generador.py', '.'),
-        ('plantillas', 'plantillas'),
-        (streamlit_path, 'streamlit'),
-    ],
+    [os.path.join(project_dir, "run_app.py")],
+    pathex=[project_dir],
+    binaries=streamlit_binaries + tzdata_binaries,
+    datas=datas,
     hiddenimports=[
-        'streamlit',
-        'docxtpl',
-        'docx',
-        'pandas',
+        "catalogo",
+        "generador",
+        *streamlit_hiddenimports,
+        *tzdata_hiddenimports,
     ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
     noarchive=False,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure)
 
 exe = EXE(
     pyz,
     a.scripts,
+    a.binaries,
+    a.datas,
     [],
-    exclude_binaries=True,
-    name='GeneradorDiligencias',
+    name="GeneradorDiligencias",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
-    console=True,  # Cambiar a False si no deseas que se vea la consola negra de fondo
-)
-
-coll = COLLECT(
-    exe,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='GeneradorDiligencias',
+    upx=False,
+    console=True,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
 )

@@ -33,6 +33,7 @@ if __name__ == '__main__':
         "run",
         app_path,
         "--server.headless=true",
+        "--server.address=127.0.0.1",
         "--server.fileWatcherType=none",
         "--global.developmentMode=false"
     ]

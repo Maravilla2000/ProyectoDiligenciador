@@ -30,7 +30,7 @@ def anio_a_letras(a: int) -> str:
 # CONFIGURACIÓN DE PÁGINA
 # =========================================================
 st.set_page_config(page_title="Generador Policial", layout="wide")
-st.title("Generador Automático de Diligencias Maravilla versión 1.1")
+st.title("Generador Automático de Diligencias C.P. Maravilla versión 1.5")
 
 # --- SELECTOR DE MODO ---
 st.subheader("Tipo de Procedimiento")
