@@ -46,11 +46,17 @@ nombres_agentes = [a['nombre'] for a in CATALOGO_AGENTES if a['nombre'] != 'OTRO
 
 # --- SECCIÓN 1: FECHA, HORA Y AGENTES ---
 st.subheader("1. Fecha, Hora y Agentes Captores")
+
+# 🔹 Zona horaria de El Salvador (para que la hora mostrada sea la local, no UTC del servidor)
+from zoneinfo import ZoneInfo
+zona_sv = ZoneInfo("America/El_Salvador")
+ahora_sv = datetime.datetime.now(zona_sv)
+
 col_f1, col_f2 = st.columns(2)
 with col_f1:
-    fecha_acta_input = st.date_input("Fecha del Procedimiento", value=datetime.date.today())
+    fecha_acta_input = st.date_input("Fecha del Procedimiento", value=ahora_sv.date())
 with col_f2:
-    hora_acta_input = st.time_input("Hora del Procedimiento", value=datetime.datetime.now().time(), step=60)
+    hora_acta_input = st.time_input("Hora del Procedimiento", value=ahora_sv.time(), step=60)
 col1, col2, col3 = st.columns(3)
 with col1:
     codigo_expediente = st.text_input("Código de Expediente / Ref.", "001-2026")
