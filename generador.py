@@ -172,9 +172,10 @@ def construir_textos_delitos(imputados: list) -> dict:
 # PREPARACIÓN DE GRAMÁTICA Y EDADES/DUI
 # =========================================================
 def preparar_gramatica(datos_caso: dict) -> dict:
-        # 🔹 Valores por defecto para nuevos campos (por si no vienen)
+    # 🔹 Valores por defecto para campos opcionales (investigador y SATI)
     datos_caso.setdefault("nombre_investigador", "")
     datos_caso.setdefault("codigo_sati", "")
+
     imputados = limpiar_datos(datos_caso.get("lista_imputados", []))
     victimas = limpiar_datos(datos_caso.get("lista_victimas", []))
 
@@ -209,15 +210,33 @@ def preparar_gramatica(datos_caso: dict) -> dict:
             f"{trato} {v['Nombre']} de {edad_acta} años de edad, residente en {v['Residencia']}, "
             f"{ident} con documento único de identidad número {dui_acta}"
         )
-        t_oficio = f"{v['Nombre']} de {edad_oficio} años de edad, residente en {v['Residencia']}"
+
+        # 🔹 Oficios: incluir DUI en NÚMERO
+        dui_txt_oficio = (
+            f", con documento único de identidad número {dui_oficio}"
+            if dui_oficio else ""
+        )
+        t_oficio = (
+            f"{v['Nombre']} de {edad_oficio} años de edad, "
+            f"residente en {v['Residencia']}{dui_txt_oficio}"
+        )
         v_nombres_oficio.append(f"{i+1}) {t_oficio}" if len(victimas) > 1 else t_oficio)
 
     datos_caso["bloque_victimas_remision"] = unir_con_y(v_nombres_acta)
-    datos_caso["bloque_victimas_oficios"] = "\n".join(v_nombres_oficio) if len(victimas) > 1 else (v_nombres_oficio[0] if v_nombres_oficio else "")
+    datos_caso["bloque_victimas_oficios"] = (
+        "\n".join(v_nombres_oficio) if len(victimas) > 1
+        else (v_nombres_oficio[0] if v_nombres_oficio else "")
+    )
     datos_caso["a_las_victimas_oficio"] = (
         "las víctimas" if len(victimas) > 1 
         else ("la señora" if victimas and victimas[0].get("Género", "").lower() == "femenino" else "el señor")
     ) if victimas else "la víctima"
+
+    # 🔹 Variables adicionales de identificación de víctimas para oficios (en NÚMERO)
+    datos_caso["identificaciones_victimas_oficio"] = unir_con_y(
+        [f"{v['Nombre']}: {v.get('DUI_Oficio', '')}" for v in victimas if v.get('DUI_Oficio')]
+    )
+    datos_caso["dui_victima_oficio"] = victimas[0].get('DUI_Oficio', '') if victimas else ""
 
     # === IMPUTADOS ===
     solo_mujeres = all(imp.get("Género", "").lower() == "femenino" for imp in imputados) if imputados else False
@@ -240,12 +259,16 @@ def preparar_gramatica(datos_caso: dict) -> dict:
 
         # REGLA IDENTIFICACIÓN IMPUTADO: Valor por defecto o Conversión de números
         identidad_val = imp.get("Identidad", "").strip()
+        # 🔹 Guardamos el valor ORIGINAL en número para usarlo en los oficios
+        imp["Identidad_Original"] = identidad_val
+        imp["Identidad_Oficio"] = identidad_val  # 🔹 versión en NÚMERO para oficios
+
         if not identidad_val:
             identidad_acta = "el cual manifestó no tener y llamarse como menciono previamente"
         else:
             identidad_acta = convertir_identidad_a_letras(identidad_val, para_acta=True)
 
-        imp["Identidad"] = identidad_acta
+        imp["Identidad"] = identidad_acta  # 🔹 versión en LETRAS para actas
 
         nombres_cortos.append(f"{trato} {imp['Nombre']}")
         padres = [f"de {imp[k]}" for k in ("Padre", "Madre") if imp.get(k)]
@@ -266,14 +289,26 @@ def preparar_gramatica(datos_caso: dict) -> dict:
         b_acta = (
             f"{trato} {imp['Nombre']}{alias_txt} de {edad_acta} años de edad"
             f"{est_civil_txt}{prof_txt}, de nacionalidad {imp['Nacionalidad']}, "
-            f"residente en {imp['Residencia']}, con documento unico de identidad {identidad_acta}{pandilla_txt}, {padre_madre}"
+            f"residente en {imp['Residencia']}, con documento {identidad_acta}{pandilla_txt}, {padre_madre}"
         )
         bloques_acta.append(b_acta)
 
-        b_oficio = f"{imp['Nombre']} de {edad_oficio} años de edad, de nacionalidad {imp['Nacionalidad']}, residente en {imp['Residencia']}"
+        # 🔹 Oficios: incluir IDENTIDAD en NÚMERO
+        identidad_txt_oficio = (
+            f", con documento de identidad número {imp['Identidad_Oficio']}"
+            if imp.get('Identidad_Oficio') else ""
+        )
+        b_oficio = (
+            f"{imp['Nombre']} de {edad_oficio} años de edad, "
+            f"de nacionalidad {imp['Nacionalidad']}, residente en {imp['Residencia']}"
+            f"{identidad_txt_oficio}"
+        )
         bloques_oficios.append(f"{i+1}) {b_oficio}" if plural else b_oficio)
 
-        avisos_remision.append(f"{trato} {imp['Nombre']} designó que se le avise de su detención a su {imp['Parentesco_Aviso']} de nombre {imp['Nombre_Aviso']}.")
+        avisos_remision.append(
+            f"{trato} {imp['Nombre']} designó que se le avise de su detención a su "
+            f"{imp['Parentesco_Aviso']} de nombre {imp['Nombre_Aviso']}."
+        )
 
         alias_id_txt = f" y quien es {conocido} por {imp['Alias']}," if imp.get('Alias') and imp['Alias'].lower() != "ninguno" else ","
         identidad_txt = f" {identidad_acta}," if identidad_acta else ""
@@ -300,6 +335,12 @@ def preparar_gramatica(datos_caso: dict) -> dict:
     datos_caso["bloque_datos_identificacion"] = "\n".join(datos_identificacion)
     datos_caso["bloque_avisos_identificacion"] = "\n".join(avisos_identificacion)
     datos_caso["plural_s"] = "s" if plural else ""
+
+    # 🔹 Variables adicionales de identificación de imputados para oficios (en NÚMERO)
+    datos_caso["identificaciones_imputados_oficio"] = unir_con_y(
+        [f"{imp['Nombre']}: {imp.get('Identidad_Oficio', '')}" for imp in imputados if imp.get('Identidad_Oficio')]
+    )
+    datos_caso["identidad_imputado_oficio"] = imputados[0].get('Identidad_Oficio', '') if imputados else ""
 
     if plural:
         datos_caso["a_los_imputados_oficio"] = "a las imputadas" if solo_mujeres else "a los imputados"
