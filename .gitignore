@@ -1,0 +1,33 @@
+@"
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Salida del programa
+expediente_generado/
+*.zip
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Archivos temporales de Word
+~`$*.docx
+~`$*.xlsx
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+"@ | Out-File -FilePath .gitignore -Encoding utf8
