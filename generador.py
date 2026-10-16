@@ -321,7 +321,7 @@ def preparar_gramatica(datos_caso: dict) -> dict:
         delito_detalle = f" por el (los) delito(s) de {delito_imp}" + (f" (Art. {art_imp} C.P.)" if art_imp else "")
 
         b_ident = (
-            f"{i+1}) {trato} {imp['Nombre']}{alias_id_txt}{identidad_txt}{pandilla_id_txt} "
+            f"{i+1}) {trato} {imp['Nombre']}{alias_id_txt} con numero de documento {identidad_txt}{pandilla_id_txt} "
             f"de {edad_acta} años de edad, estado familiar {imp['Estado_Civil']}, "
             f"de profesión u oficio {imp['Profesion']}, {originario} de {imp['Origen']}, "
             f"lugar y fecha de nacimiento {imp['Fecha_Nac']}, residente en {imp['Residencia']}. "
